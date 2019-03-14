@@ -1,14 +1,15 @@
 all: build
 
-TAG?=v0.1.0
+TAG?=v1.0.0
 REGISTRY?=ihub.helium.io:29006
 FLAGS=
 ENVVAR=
 GOOS?=linux
 ROOTPATH=`pwd` 
 BUILDGOPATH=/tmp/k8splugin-build
-BUILDPATH=$(BUILDGOPATH)/src/k8s-plugins/extender-controller-manager
- 
+BUILDPATH=$(BUILDGOPATH)/src/github.com/Rhealb/extender-controller-manager
+IMAGENAME=${REGISTRY}/library/enndata-controller-manager:${TAG}
+
 .IGNORE : buildEnvClean
 .IGNORE : deletedeploy 
 
@@ -16,10 +17,10 @@ deps:
 	@go get github.com/tools/godep
 	
 buildEnvClean:
-	@rm $(BUILDPATH) 1>/dev/null 2>/dev/null || true
+	@rm -rf $(BUILDGOPATH) 1>/dev/null 2>/dev/null || true
 
 buildEnv: buildEnvClean
-	@mkdir -p $(BUILDGOPATH)/src/k8s-plugins/ 1>/dev/null 2>/dev/null
+	@mkdir -p $(BUILDGOPATH)/src/github.com/Rhealb/ 1>/dev/null 2>/dev/null
 	@ln -s $(ROOTPATH) $(BUILDPATH)
 	
 build: buildEnv clean deps 
@@ -38,7 +39,7 @@ deletedeploy:
 	@kubectl delete -f deploy/enndata-controller-manager.yaml 1>/dev/null 2>/dev/null || true
 	 
 install: deletedeploy 
-	@cat deploy/enndata-controller-manager.yaml | sed "s/ihub.helium.io:29006/$(REGISTRY)/g" > deploy/tmp.yaml
+	@cat deploy/enndata-controller-manager.yaml | sed "s!{image}!${IMAGENAME}!g" > deploy/tmp.yaml
 	kubectl create -f deploy/tmp.yaml
 	@rm deploy/tmp.yaml
 	 

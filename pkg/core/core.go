@@ -1,8 +1,8 @@
 package core
 
 import (
-	"k8s-plugins/extender-controller-manager/pkg/failpodscaler"
-	"k8s-plugins/extender-controller-manager/pkg/hostpathpv"
+	"github.com/Rhealb/extender-controller-manager/pkg/failpodscaler"
+	"github.com/Rhealb/extender-controller-manager/pkg/hostpathpv"
 
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/informers"
@@ -53,7 +53,7 @@ func startFailPodScalerController(ctx ControllerContext) (bool, error) {
 	if ctx.ComponentConfig.FailPodScaleLimit <= 0 { // if FailPodScaleLimit <=0 FailPodScalerController will be disabled
 		return true, nil
 	}
-	fpsClientGoClient := ctx.ClientBuilder.ClientGoClientOrDie("fail-pod-scaler")
+	fpsClientGoClient := ctx.ClientBuilder.ClientOrDie("fail-pod-scaler")
 	fpsClientConfig := ctx.ClientBuilder.ConfigOrDie("fail-pod-scaler")
 
 	// we don't use cached discovery because DiscoveryScaleKindResolver does its own caching,

@@ -26,10 +26,10 @@ import (
 	"sync"
 	"time"
 
-	xfs "k8s-plugins/csi-plugin/hostpathpv/pkg/hostpath/xfsquotamanager/common"
+	xfs "github.com/Rhealb/csi-plugin/hostpathpv/pkg/hostpath/xfsquotamanager/common"
 
-	xfshostpath "k8s-plugins/csi-plugin/hostpathpv/pkg/hostpath"
-	"k8s-plugins/extender-scheduler/pkg/algorithm"
+	xfshostpath "github.com/Rhealb/csi-plugin/hostpathpv/pkg/hostpath"
+	"github.com/Rhealb/extender-scheduler/pkg/algorithm"
 
 	"github.com/golang/glog"
 	"k8s.io/api/core/v1"

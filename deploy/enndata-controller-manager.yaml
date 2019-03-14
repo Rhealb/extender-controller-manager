@@ -38,7 +38,7 @@ spec:
             weight: 1      
       containers:
       - name: enndata-controller-manager
-        image: ihub.helium.io:29006/library/enndata-controller-manager:v0.1.0
+        image: {image}
         imagePullPolicy: Always
         args:
         - /enndata-controller-manager

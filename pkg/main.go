@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"math/rand"
@@ -9,7 +10,7 @@ import (
 
 	"time"
 
-	"k8s-plugins/extender-controller-manager/pkg/core"
+	"github.com/Rhealb/extender-controller-manager/pkg/core"
 
 	"github.com/golang/glog"
 	"k8s.io/api/core/v1"
@@ -148,9 +149,8 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	stopCh := make(chan struct{})
-	run := func(stop <-chan struct{}) {
-		ctx, err := CreateControllerContext(stopCh)
+	run := func(context context.Context) {
+		ctx, err := CreateControllerContext(context.Done())
 		if err != nil {
 			glog.Errorf("CreateControllerContext err:%v", err)
 			os.Exit(1)
@@ -165,11 +165,11 @@ func main() {
 				glog.Infof("skip controller %s", name)
 			}
 		}
-		ctx.InformerFactory.Start(ctx.Stop)
+		ctx.InformerFactory.Start(context.Done())
 		select {}
 	}
 	if !*leaderElect {
-		run(wait.NeverStop)
+		run(context.TODO())
 		panic("unreachable")
 	}
 	id, err := os.Hostname()
@@ -197,7 +197,7 @@ func main() {
 		glog.Fatalf("error creating lock: %v", err)
 	}
 
-	leaderelection.RunOrDie(leaderelection.LeaderElectionConfig{
+	leaderelection.RunOrDie(context.TODO(), leaderelection.LeaderElectionConfig{
 		Lock:          rl,
 		LeaseDuration: *leaseDuration,
 		RenewDeadline: *leaderRenewDuration,
